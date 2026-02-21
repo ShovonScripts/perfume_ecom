@@ -17,8 +17,9 @@
 
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-xl border border-gray-100 dark:border-gray-700">
             <div class="divide-y divide-gray-100 dark:divide-gray-700">
-                @forelse($orders as $order)
-                <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                @if($orders->isNotEmpty())
+                    @foreach ($orders as $order)
+                    <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     
                     {{-- Order Info --}}
                     <div>
@@ -61,8 +62,9 @@
                             View Details
                         </a>
                     </div>
-                </div>
-                @empty
+                    </div>
+                    @endforeach
+                @else
                 <div class="p-12 text-center">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +74,7 @@
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white">No orders found</h3>
                     <p class="mt-2 text-gray-500 dark:text-gray-400">You haven't placed any orders yet.</p>
                 </div>
-                @endforelse
+                @endif
             </div>
             
             {{-- Pagination --}}

@@ -7,6 +7,9 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\OrderUpdatedMail;
 
 class AdminOrderController extends Controller
 {
@@ -75,6 +78,15 @@ class AdminOrderController extends Controller
         Cache::forget('admin.dashboard.stats');
         Cache::forget('admin.dashboard.chart');
 
+        if ($order->email) {
+            try {
+                Mail::to($order->email)->queue(new OrderUpdatedMail($order));
+            }
+            catch (\Exception $e) {
+                Log::warning('Order update email failed: ' . $e->getMessage());
+            }
+        }
+
         return back()->with('success', 'Order status updated successfully');
     }
 
@@ -88,8 +100,22 @@ class AdminOrderController extends Controller
             'bulk_status' => 'required|in:pending,processing,packed,shipped,delivered,cancelled',
         ]);
 
-        $count = Order::whereIn('id', $request->order_ids)
-            ->update(['status' => $request->bulk_status]);
+        $orders = Order::whereIn('id', $request->order_ids)->get();
+
+        $count = 0;
+        foreach ($orders as $order) {
+            $order->update(['status' => $request->bulk_status]);
+            $count++;
+
+            if ($order->email) {
+                try {
+                    Mail::to($order->email)->queue(new OrderUpdatedMail($order));
+                }
+                catch (\Exception $e) {
+                    Log::warning('Bulk order update email failed for order ' . $order->order_number . ': ' . $e->getMessage());
+                }
+            }
+        }
 
         // Bust dashboard caches
         Cache::forget('admin.dashboard.stats');

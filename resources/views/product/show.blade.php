@@ -315,8 +315,9 @@
                         </div>
 
                         <div class="space-y-6">
-                            @forelse($product->reviews as $review)
-                            <div class="border-b border-gray-100 dark:border-gray-700 pb-6 last:border-0 last:pb-0">
+                            @if($product->reviews->count() > 0)
+                                @foreach ($product->reviews as $review)
+                                <div class="border-b border-gray-100 dark:border-gray-700 pb-6 last:border-0 last:pb-0">
                                 <div class="flex items-center gap-2 mb-2">
                                     <div class="font-bold text-gray-900 dark:text-white">{{ $review->user->name }}</div>
                                 </div>
@@ -331,12 +332,13 @@
                                     <span class="text-gray-400 ml-2">{{ $review->created_at->format('M d, Y') }}</span>
                                 </div>
                                 <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{{ $review->review_text }}</p>
-                            </div>
-                            @empty
+                                </div>
+                                @endforeach
+                            @else
                             <div class="text-center py-8">
                                 <p class="text-gray-500 dark:text-gray-400">No reviews yet. Be the first to share your thoughts!</p>
                             </div>
-                            @endforelse
+                            @endif
                         </div>
                     </div>
 

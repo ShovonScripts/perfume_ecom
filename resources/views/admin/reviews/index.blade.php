@@ -24,8 +24,9 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-                @forelse($reviews as $review)
-                <tr class="hover:bg-gray-50 transition-colors">
+                @if($reviews->count() > 0)
+                    @foreach ($reviews as $review)
+                    <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4">
                         @if($review->product)
                             <div class="flex items-center gap-3">
@@ -110,7 +111,8 @@
                         </form>
                     </td>
                 </tr>
-                @empty
+                    @endforeach
+                @else
                 <tr>
                     <td colspan="7" class="px-6 py-12 text-center text-gray-500">
                         <div class="flex flex-col items-center justify-center">
@@ -119,7 +121,7 @@
                         </div>
                     </td>
                 </tr>
-                @endforelse
+                @endif
             </tbody>
         </table>
     </div>

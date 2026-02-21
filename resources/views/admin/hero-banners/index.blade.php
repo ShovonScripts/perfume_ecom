@@ -24,8 +24,9 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                    @forelse($banners as $banner)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    @if($banners->count() > 0)
+                        @foreach ($banners as $banner)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td class="px-6 py-4">
                             <img src="{{ asset('storage/'.$banner->image_path) }}" alt="Banner" class="h-16 w-24 object-cover rounded-lg border border-gray-200 dark:border-gray-700">
                         </td>
@@ -67,7 +68,8 @@
                             </div>
                         </td>
                     </tr>
-                    @empty
+                    @endforeach
+                    @else
                     <tr>
                         <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                             <i data-lucide="image-off" class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600"></i>
@@ -78,7 +80,7 @@
                             </a>
                         </td>
                     </tr>
-                    @endforelse
+                    @endif
                 </tbody>
             </table>
         </div>

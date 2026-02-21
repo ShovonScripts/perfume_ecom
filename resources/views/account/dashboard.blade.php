@@ -73,67 +73,69 @@
             </div>
 
             <div class="divide-y divide-gray-100 dark:divide-gray-700">
-                @forelse($recentOrders as $order)
-                <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    
-                    {{-- Order Info --}}
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <span class="font-bold text-gray-900 dark:text-white">#{{ $order->order_number }}</span>
-                            <span class="text-xs text-gray-400 font-medium px-2 py-0.5 border border-gray-200 dark:border-gray-600 rounded-full">
-                                {{ $order->items_count ?? $order->orderItems->count() }} items
+                @if ($recentOrders->isNotEmpty())
+                    @foreach ($recentOrders as $order)
+                    <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        
+                        {{-- Order Info --}}
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-gray-900 dark:text-white">#{{ $order->order_number }}</span>
+                                <span class="text-xs text-gray-400 font-medium px-2 py-0.5 border border-gray-200 dark:border-gray-600 rounded-full">
+                                    {{ $order->items_count ?? $order->orderItems->count() }} items
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                Placed on {{ $order->created_at->format('d M Y, h:i A') }}
+                            </p>
+                        </div>
+
+                        {{-- Status Badge --}}
+                        <div>
+                            @php
+                                $statusClasses = [
+                                    'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
+                                    'processing' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+                                    'shipped' => 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
+                                    'delivered' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+                                    'cancelled' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+                                ];
+                                $statusClass = $statusClasses[$order->status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+                            @endphp
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
+                                {{ ucfirst($order->status) }}
                             </span>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            Placed on {{ $order->created_at->format('d M Y, h:i A') }}
-                        </p>
-                    </div>
 
-                    {{-- Status Badge --}}
-                    <div>
-                        @php
-                            $statusClasses = [
-                                'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-                                'processing' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-                                'shipped' => 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
-                                'delivered' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-                                'cancelled' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-                            ];
-                            $statusClass = $statusClasses[$order->status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-                        @endphp
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
-                            {{ ucfirst($order->status) }}
-                        </span>
-                    </div>
-
-                    {{-- Total + Action --}}
-                    <div class="text-right flex items-center gap-4">
-                        <div>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Total</p>
-                            <p class="font-bold text-gray-900 dark:text-white">৳{{ number_format($order->grand_total, 2) }}</p>
+                        {{-- Total + Action --}}
+                        <div class="text-right flex items-center gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Total</p>
+                                <p class="font-bold text-gray-900 dark:text-white">৳{{ number_format($order->grand_total, 2) }}</p>
+                            </div>
+                            <a href="#" class="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
                         </div>
-                        <a href="#" class="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+
+                    </div>
+                    @endforeach
+                @else
+                    <div class="p-12 text-center">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                             </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">No orders yet</h3>
+                        <p class="mt-2 text-gray-500 dark:text-gray-400">Start shopping to see your orders here.</p>
+                        <a href="{{ route('home') }}" class="inline-block mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                            Start Shopping
                         </a>
                     </div>
-
-                </div>
-                @empty
-                <div class="p-12 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
-                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">No orders yet</h3>
-                    <p class="mt-2 text-gray-500 dark:text-gray-400">Start shopping to see your orders here.</p>
-                    <a href="{{ route('home') }}" class="inline-block mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                        Start Shopping
-                    </a>
-                </div>
-                @endforelse
+                @endif
             </div>
         </div>
 
