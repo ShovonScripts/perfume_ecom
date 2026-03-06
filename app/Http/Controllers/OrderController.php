@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -50,5 +51,22 @@ class OrderController extends Controller
 
         return redirect()->route('order.success', $order) // Assuming order.success displays confirmation
             ->with('success', 'Payment info submitted. Awaiting verification.');
+    }
+
+    public function downloadInvoice(Order $order)
+    {
+        // Ensure user owns this order, if it's tied to a user
+        if ($order->user_id !== null && $order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $order->load(['items.product', 'items.variant']);
+
+        // Fetch company settings to pass to the invoice explicitly if needed (or fetch directly in blade)
+        $pdf = Pdf::loadView('admin.orders.invoice', [
+            'order' => $order
+        ]);
+
+        return $pdf->download('invoice-' . $order->order_number . '.pdf');
     }
 }

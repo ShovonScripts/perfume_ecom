@@ -71,6 +71,7 @@ Route::post('/checkout', [CheckoutController::class , 'store'])->name('checkout.
 Route::get('/order/{order}/payment', [App\Http\Controllers\OrderController::class , 'payment'])->name('orders.payment');
 Route::post('/order/{order}/payment', [App\Http\Controllers\OrderController::class , 'submitPayment'])->name('orders.payment.submit');
 Route::get('/order/success/{order}', [PageController::class , 'orderSuccess'])->name('order.success');
+Route::get('/order/{order}/invoice', [App\Http\Controllers\OrderController::class , 'downloadInvoice'])->name('order.invoice.download');
 
 // Admin Routes
 Route::middleware(['auth', 'is_admin'])
@@ -136,3 +137,24 @@ Route::middleware(['auth', 'is_admin'])
     });
 
 require __DIR__ . '/auth.php';
+
+// Temporary route to create storage link on live server
+Route::get('/create-storage-link', function () {
+    try {
+        // Remove existing link if any
+        if (file_exists(public_path('storage'))) {
+            // Attempt to delete it depending on if it's a symlink or directory
+            if (is_link(public_path('storage'))) {
+                unlink(public_path('storage'));
+            }
+            else {
+            // Ignore standard directory deletion here to avoid accidental data loss if it's the real storage.
+            }
+        }
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Storage Link Created Successfully';
+    }
+    catch (\Exception $e) {
+        return 'Error creating storage link: ' . $e->getMessage();
+    }
+});

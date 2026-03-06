@@ -105,13 +105,29 @@
                         </div>
                     </div>
 
+                    <!-- Alerts -->
+                    @if($order->email)
+                        <div class="mt-6 mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg flex items-start gap-4 text-blue-800 dark:text-blue-200">
+                            <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <div>
+                                <h4 class="font-bold">Check your inbox!</h4>
+                                <p class="text-sm mt-1">An order confirmation email with your invoice has been sent to <strong>{{ $order->email }}</strong>.</p>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Actions -->
                     <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="{{ route('home') }}" 
-                       class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
-                        Back to Home
-                    </a>
-                </div>
+                        <a href="{{ route('order.invoice.download', $order->id) }}"
+                           class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Download Invoice
+                        </a>
+                        <a href="{{ route('home') }}" 
+                           class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg text-center">
+                            Back to Home
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -105,7 +105,7 @@
                  <div class="mt-8">
                     <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Serving Now</h4>
                     <p class="text-xs text-gray-500 leading-relaxed">
-                        Dhaka, Chittagong, Sylhet, Rajshahi, Khulna
+                        Nationwide delivery across Bangladesh.
                     </p>
                  </div>
             </div>
